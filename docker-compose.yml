@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend-server
+    container_name: snappy-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend-server/.env
+    volumes:
+      - ./backend-server:/app
+
+  website:
+    build:
+      context: ./website
+    container_name: snappy-website
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./website/.env
+    volumes:
+      - ./website:/app
+    depends_on:
+      - backend
