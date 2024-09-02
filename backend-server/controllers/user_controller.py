@@ -13,6 +13,7 @@ def login():
         password = data.get('password')
         
         user = User.objects(username=username).first()
+
         if not user or not check_password_hash(user.password, password):
             return jsonify({"msg": "Incorrect Username or Password", "status": False}), 400
         
@@ -31,12 +32,17 @@ def register():
         email = data.get('email')
         password = data.get('password')
         
-        if User.objects(username=username).first():
-            return jsonify({"msg": "Username already used", "status": False}), 400
+        print("try to reach db")
         
-        if User.objects(email=email).first():
-            return jsonify({"msg": "Email already used", "status": False}), 400
+        try:
+            if User.objects(username=username).first():
+                return jsonify({"msg": "Username already used", "status": False}), 400
         
+            if User.objects(email=email).first():
+                return jsonify({"msg": "Email already used", "status": False}), 400
+        except Exception as e:
+            print(e)
+
         hashed_password = generate_password_hash(password)
         user = User(username=username, email=email, password=hashed_password)
         user.save()
